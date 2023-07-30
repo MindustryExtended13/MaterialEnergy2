@@ -24,7 +24,7 @@ ext {
             name = name.substring(1);
         }
 
-        return "com.github.MindustryExtended13.Me13Core:$name:v1.6"
+        return "com.github.MindustryExtended13.Me13Core:$name:v1.7-beta"
     }
 }
 
