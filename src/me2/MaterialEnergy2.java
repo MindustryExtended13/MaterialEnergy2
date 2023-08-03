@@ -1,12 +1,173 @@
 package me2;
 
+import arc.Core;
+import arc.Events;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.struct.Seq;
+import me13.core.logger.LogBinder;
+import me2.content.ME2Blocks;
+import me2.content.ME2Items;
+import me2.mixin.ItemStorageMixin;
+import me2.mixin.LiquidStorageMixin;
+import me2.net.ME2NetGraph;
+import mindustry.Vars;
+import mindustry.game.EventType;
+import mindustry.gen.Building;
+import mindustry.gen.Icon;
+import mindustry.graphics.Layer;
 import mindustry.mod.Mod;
+import java.util.Objects;
 
 import static me2.MaterialEnergy2Vars.*;
 
+import me2.world.ME2Adapter;
+import me2.world.ME2Adapter.ME2AdapterBuild;
+import me2.world.ME2Block;
+import me2.world.ME2Block.ME2Build;
+import me2.world.ME2Cable;
+import me2.world.ME2Cable.ME2CableBuild;
+
 @SuppressWarnings("unused")
 public class MaterialEnergy2 extends Mod {
+    public static boolean debugModeEnabled = false;
+
     public MaterialEnergy2() {
         LOGGER.info("Loaded constructor");
+
+        Events.on(EventType.ClientLoadEvent.class, (ignored) -> {
+            LogBinder binder = LOGGER.atInfo().setPrefix("MIXIN");
+            var mixins = ME2Configurator.mixins();
+            binder.log("Starting loading {} mixins", mixins.size);
+            mixins.each(mixin -> {
+                binder.log("Mixin init: {}", mixin.name());
+                mixin.init();
+            });
+
+            debugModeEnabled = Core.settings.getBool("me2-debug-mode");
+            Vars.ui.settings.addCategory(MOD_NAME, Icon.crafting, (t) -> {
+                t.checkPref("me2-debug-mode", false, (bool) -> {
+                    debugModeEnabled = bool;
+                });
+            });
+        });
+
+        Events.run(EventType.Trigger.draw, () -> {
+            if(debugModeEnabled) {
+                Seq<ME2NetGraph> graphSeq = new Seq<>();
+                Vars.world.tiles.eachTile(tile -> {
+                    if(tile.build == null) {
+                        return;
+                    }
+                    Building b = tile.build;
+                    if(b instanceof ME2Build) {
+                        ME2NetGraph graph = ((ME2Build) b).graph;
+                        if(!graphSeq.contains(graph)) {
+                            graphSeq.add(graph);
+                            Draw.draw(Layer.blockBuilding + 10, () -> {
+                                if(graph.debugColor == null) {
+                                    graph.netDebugColor();
+                                }
+                                Draw.color(graph.debugColor);
+                                Draw.alpha(0.5f);
+                                graph.eachBuilding(build -> {
+                                    float s = build.block.size * 8;
+                                    Fill.rect(build.tile.worldx(), build.tile.worldy(), s, s);
+                                });
+                                Draw.reset();
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void loadContent() {
+        LOGGER.info("ITEMS", "Loading...");
+        ME2Items.load();
+        LOGGER.info("BLOCKS", "Loading...");
+        ME2Blocks.load();
+    }
+
+    @Override
+    public void init() {
+        ME2Configurator.register(new ItemStorageMixin());
+        ME2Configurator.register(new LiquidStorageMixin());
+
+        ME2Configurator.register(new BuildingSettingsMixin() {
+            @Override
+            public void init() {
+            }
+
+            @Override
+            public String name() {
+                return ME2Cable.class.getSimpleName();
+            }
+
+            @Override
+            public Seq<Building> connections(Building building) {
+                if (!(building instanceof ME2CableBuild)) {
+                    return new Seq<>();
+                }
+
+                ME2Cable cable = (ME2Cable) building.block;
+                if (cable.isGate && !building.enabled) {
+                    return new Seq<>();
+                }
+
+                if(cable.isJunction) {
+                    return new Seq<>();
+                }
+
+                return building.proximity()
+                        .select(b -> b instanceof ME2Build)
+                        .map(b -> (ME2Build) b)
+                        .select(b -> b.canConnectWire((ME2CableBuild) building))
+                        .map(b -> getConnectionOf(building, b))
+                        .select(Objects::nonNull);
+            }
+        });
+
+        ME2Configurator.register(new BuildingSettingsMixin() {
+            @Override
+            public void init() {
+            }
+
+            @Override
+            public String name() {
+                return ME2Adapter.class.getSimpleName();
+            }
+
+            @Override
+            public int channelsUsage(Building building) {
+                return building instanceof ME2AdapterBuild ? 1 : 0;
+            }
+
+            @Override
+            public Seq<Building> connections(Building building) {
+                if(!(building instanceof ME2AdapterBuild)) {
+                    return new Seq<>();
+                }
+
+                ME2AdapterBuild build = (ME2AdapterBuild) building;
+                Seq<Building> out = new Seq<>();
+                if(build.enabledChild()) {
+                    out.add(build.nearby());
+                }
+                Building x = MaterialEnergy2Vars.getConnectionOf(build, build.reversedNearby());
+                if(x != null) out.add(x);
+                return out;
+            }
+        });
+    }
+
+    public static Seq<Building> connectionDefault(Building building) {
+        return building.proximity()
+                .select(b -> b instanceof ME2CableBuild)
+                .map(b -> (ME2CableBuild) b)
+                .map(b -> MaterialEnergy2Vars.getConnectionOf(building, b))
+                .select(b -> b instanceof ME2CableBuild);
     }
 }

@@ -117,6 +117,7 @@ dependencies {
     implementation project(":integration")
 
     //ME13 components
+    implementation modCore(":block")
     implementation modCore(":logger")
 
     //Informatronics integration
@@ -217,17 +218,19 @@ task zipJar(type: Jar) {
 
 project(":core") {
     dependencies {
+        implementation modCore(":block")
         implementation modCore(":logger")
+        implementation rootProject.project(":integration")
         annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
         compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
         compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryVersion"
     }
 }
 
-//project(":integration") {
-//    dependencies {
-//        annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
-//        compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-//        compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryVersion"
-//    }
-//}
+project(":integration") {
+    dependencies {
+        annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+        compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+        compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryVersion"
+    }
+}
