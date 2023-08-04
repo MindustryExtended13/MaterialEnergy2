@@ -21,11 +21,10 @@ import java.util.Objects;
 
 import static me2.MaterialEnergy2Vars.*;
 
-import me2.world.ME2Adapter;
+import me2.world.*;
+import me2.world.ME2Bridge.ME2BridgeBuild;
 import me2.world.ME2Adapter.ME2AdapterBuild;
-import me2.world.ME2Block;
 import me2.world.ME2Block.ME2Build;
-import me2.world.ME2Cable;
 import me2.world.ME2Cable.ME2CableBuild;
 
 @SuppressWarnings("unused")
@@ -103,7 +102,7 @@ public class MaterialEnergy2 extends Mod {
 
             @Override
             public String name() {
-                return ME2Cable.class.getSimpleName();
+                return ME2Cable.class.getSimpleName() + "Mixin";
             }
 
             @Override
@@ -137,7 +136,34 @@ public class MaterialEnergy2 extends Mod {
 
             @Override
             public String name() {
-                return ME2Adapter.class.getSimpleName();
+                return ME2Bridge.class.getSimpleName() + "Mixin";
+            }
+
+            @Override
+            public Seq<Building> connections(Building building) {
+                if(!(building instanceof ME2BridgeBuild)) {
+                    return new Seq<>();
+                }
+                ME2BridgeBuild build = (ME2BridgeBuild) building;
+                Seq<Building> out = new Seq<>();
+                if(build.validLink()) {
+                    out.add(build.linked);
+                    out.add(connections(build.linked));
+                }
+                Building x = MaterialEnergy2Vars.getConnectionOf(build, build.nearby());
+                if(x != null) out.add(x);
+                return out;
+            }
+        });
+
+        ME2Configurator.register(new BuildingSettingsMixin() {
+            @Override
+            public void init() {
+            }
+
+            @Override
+            public String name() {
+                return ME2Adapter.class.getSimpleName() + "Mixin";
             }
 
             @Override

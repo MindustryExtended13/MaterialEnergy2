@@ -3,13 +3,14 @@ package me2.content;
 import me13.core.block.instance.EnumTextureMapping;
 import me13.core.block.instance.Layer;
 import me2.world.ME2Adapter;
+import me2.world.ME2Bridge;
 import me2.world.ME2Cable;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
 
 public class ME2Blocks {
-    public static Block cable, cableJunction, cableSwitch, adapter;
+    public static Block cable, cableJunction, cableSwitch, adapter, bridge;
 
     public static void load() {
         cable = new ME2Cable("cable") {{
@@ -51,6 +52,14 @@ public class ME2Blocks {
         cableJunction = new ME2Cable("cable-junction") {{
             isJunction = true;
             requirements(Category.distribution, ItemStack.empty);
+        }};
+
+        bridge = new ME2Bridge("bridge") {{
+            drawBase = false;
+            requirements(Category.distribution, ItemStack.empty);
+            layers.add(new Layer(this, "-", EnumTextureMapping.ROT) {{
+                this.rotate = false;
+            }});
         }};
     }
 }
