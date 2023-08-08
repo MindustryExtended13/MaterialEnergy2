@@ -147,8 +147,9 @@ public class MaterialEnergy2 extends Mod {
                 ME2BridgeBuild build = (ME2BridgeBuild) building;
                 Seq<Building> out = new Seq<>();
                 if(build.validLink()) {
-                    out.add(build.linked);
-                    out.add(connections(build.linked));
+                    Building link = build.link();
+                    out.add(link);
+                    out.add(connections(link));
                 }
                 Building x = MaterialEnergy2Vars.getConnectionOf(build, build.nearby());
                 if(x != null) out.add(x);
