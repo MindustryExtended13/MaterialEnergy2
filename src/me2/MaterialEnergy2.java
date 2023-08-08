@@ -10,7 +10,7 @@ import me2.content.ME2Blocks;
 import me2.content.ME2Items;
 import me2.mixin.ItemStorageMixin;
 import me2.mixin.LiquidStorageMixin;
-import me2.net.ME2NetGraph;
+import me2.util.ME2NetGraph;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Building;

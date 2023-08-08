@@ -2,10 +2,8 @@ package me2.world;
 
 import arc.Core;
 import me13.core.block.instance.AdvancedBlock;
-import me2.MaterialEnergy2Vars;
-import me2.net.ME2NetGraph;
+import me2.util.ME2NetGraph;
 import mindustry.entities.units.BuildPlan;
-import mindustry.gen.Building;
 
 public class ME2Block extends AdvancedBlock {
     public boolean canConnect(BuildPlan self, BuildPlan other) {

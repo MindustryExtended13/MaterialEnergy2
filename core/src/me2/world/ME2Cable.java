@@ -1,6 +1,5 @@
 package me2.world;
 
-import arc.Core;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Eachable;
@@ -9,7 +8,6 @@ import me13.core.block.SchemeConnectionHand;
 import me13.core.block.instance.EnumTextureMapping;
 import me13.core.block.instance.Layer;
 import me2.MaterialEnergy2Vars;
-import me2.net.ME2NetGraph;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
@@ -34,6 +32,9 @@ public class ME2Cable extends ME2Block {
 
     public ME2Cable(String name) {
         super(name);
+        solid = false;
+        underBullets = true;
+        conveyorPlacement = true;
     }
 
     public class ME2CableBuild extends ME2Build {

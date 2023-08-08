@@ -1,4 +1,4 @@
-package me2.net;
+package me2.util;
 
 import arc.func.Cons;
 import arc.graphics.Color;
