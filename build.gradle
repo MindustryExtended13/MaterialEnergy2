@@ -30,7 +30,7 @@ ext {
 
 //java 8 backwards compatibility flag
 allprojects {
-    group = "io.user.modname"
+    group = "io.TheEE145.MaterialEnergy2"
     version '1.0'
 
     tasks.withType(JavaCompile){
@@ -119,6 +119,7 @@ dependencies {
     //ME13 components
     implementation modCore(":block")
     implementation modCore(":logger")
+    implementation modCore(":items")
 
     //Informatronics integration
     //implementation "com.github.MindustryExtended13.informatronics:tools:1.0"
@@ -220,6 +221,7 @@ project(":core") {
     dependencies {
         implementation modCore(":block")
         implementation modCore(":logger")
+        implementation modCore(":items")
         implementation rootProject.project(":integration")
         annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
         compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"

@@ -5,12 +5,13 @@ import me13.core.block.instance.Layer;
 import me2.world.ME2Block;
 import me2.world.ME2Bridge;
 import me2.world.ME2Cable;
+import me2.world.bus.ME2TransportationBus;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
 
 public class ME2Blocks {
-    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer;
+    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus, importBus;
 
     public static void load() {
         cable = new ME2Cable("cable") {{
@@ -20,6 +21,15 @@ public class ME2Blocks {
                 this.hand = ME2Cable.DEFAULT_HAND;
                 this.hand2 = ME2Cable.DEFAULT_SCHEME_HAND;
             }});
+        }};
+
+        importBus = new ME2TransportationBus("import-bus", true) {{
+            requirements(Category.effect, ItemStack.empty);
+        }};
+
+        exportBus = new ME2TransportationBus("export-bus", false) {{
+            requirements(Category.effect, ItemStack.empty);
+            configurable = true;
         }};
 
         cableSwitch = new ME2Cable("cable-switch") {{
