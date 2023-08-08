@@ -171,14 +171,45 @@ public class MaterialEnergy2 extends Mod {
 
             @Override
             public String name() {
+                return ME2TransportationBus.class.getSimpleName() + "Mixin";
+            }
+
+            @Override
+            public int channelsUsage(Building building) {
+                return building instanceof ME2TransportationBus.ME2BusBuild ? 1 : 0;
+            }
+        });
+
+        ME2Configurator.register(new BuildingSettingsMixin() {
+            @Override
+            public void init() {
+            }
+
+            @Override
+            public String name() {
                 return ME2Block.class.getSimpleName() + "Mixin";
+            }
+
+            @Override
+            public int channelsGeneration(Building building) {
+                if(building instanceof ME2Build) {
+                    ME2Block block = (ME2Block) building.block;
+                    if(block.typeId == ME2Block.CONTROLLER_TYPE) {
+                        return building.enabled && building.canConsume() ? 32 : 0;
+                    }
+                }
+                return 0;
             }
 
             @Override
             public int channelsUsage(Building building) {
                 if(building instanceof ME2Build) {
                     ME2Block build = (ME2Block) building.block;
-                    if(build.typeId == ME2Block.ADAPTER_TYPE || build.typeId == ME2Block.BALANCER_TYPE) {
+                    if(
+                            build.typeId == ME2Block.ADAPTER_TYPE  ||
+                            build.typeId == ME2Block.BALANCER_TYPE ||
+                            build.typeId == ME2Block.TERMINAL_TYPE
+                    ) {
                         return 1;
                     }
                 }

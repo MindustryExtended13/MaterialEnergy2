@@ -1,4 +1,4 @@
-package me2.world.bus;
+package me2.world;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
@@ -94,14 +94,12 @@ public class ME2TransportationBus extends ME2Block {
         public void write(Writes write) {
             write.i(configurationLiquid == null ? -1 : configurationLiquid.id);
             itemData.write(write);
-            write.i(index);
         }
 
         @Override
         public void read(Reads read, byte revision) {
             configurationLiquid = Vars.content.liquid(read.i());
             itemData.read(read);
-            index = read.i();
         }
 
         @Override
@@ -118,7 +116,7 @@ public class ME2TransportationBus extends ME2Block {
         public void updateTile() {
             super.updateTile();
 
-            if(!graph.isEnabled()) {
+            if(!graphEnabled) {
                 return;
             }
 

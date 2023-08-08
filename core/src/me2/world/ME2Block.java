@@ -2,6 +2,9 @@ package me2.world;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.scene.ui.layout.Table;
 import me13.core.block.BlockAngles;
 import me13.core.block.instance.AdvancedBlock;
 import me2.BuildingSettingsMixin;
@@ -13,19 +16,19 @@ import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
+import mindustry.graphics.Drawf;
+import mindustry.ui.Styles;
 
 public class ME2Block extends AdvancedBlock {
     public static final int
             NO_TYPE_NO_C = -1,
             NO_TYPE = 0,
             ADAPTER_TYPE = 1,
-            BALANCER_TYPE = 2;
+            BALANCER_TYPE = 2,
+            TERMINAL_TYPE = 3,
+            CONTROLLER_TYPE = 4;
 
-    /**
-     * 0 - no type
-     * 1 - adapter
-     * 2 - balancer
-     */
+    public TextureRegion rotatorRegion;
     public int typeId = NO_TYPE_NO_C;
 
     public boolean noType() {
@@ -44,10 +47,24 @@ public class ME2Block extends AdvancedBlock {
         update = true;
     }
 
+    @Override
+    public void load() {
+        super.load();
+        rotatorRegion = Core.atlas.find(name + "-rotator");
+    }
+
     public class ME2Build extends AdvancedBuild {
         public ME2NetGraph graph = new ME2NetGraph();
+        public boolean graphEnabled = true;
+        public boolean changed = false;
+        public float rotation;
         public int tmp = -1;
         public int timer = 0;
+
+        public void onGraphEdit() {
+            graphEnabled = graph.isEnabledTmp;
+            changed = true;
+        }
 
         public void onEnableChange() {
             graph.proximityUpdate(this);
@@ -67,6 +84,10 @@ public class ME2Block extends AdvancedBlock {
             }
         }
 
+        public float controllerScl() {
+            return (float) graph.totalChannelsUsage() / graph.totalChannelsGeneration();
+        }
+
         public boolean enabledChild() {
             Building building = nearby();
             if(building == null || !enabled) {
@@ -83,10 +104,17 @@ public class ME2Block extends AdvancedBlock {
                             mass[0]--;
                         }
                     });
-
             if(mass[0] == 0) {
                 return !(building instanceof ME2Build);
             } else return mass[0] > 0;
+        }
+
+        @Override
+        public void draw() {
+            super.draw();
+            if(typeId == ME2Block.CONTROLLER_TYPE) {
+                Draw.rect(rotatorRegion, x, y, rotation);
+            }
         }
 
         @Override
@@ -99,14 +127,20 @@ public class ME2Block extends AdvancedBlock {
             //    graph.proximityUpdate(this);
             //}
 
-            if(typeId == BALANCER_TYPE && timer % 60 == 59 && enabled && graph.isEnabled()) {
-                Fx.healBlockFull.at(x, y, block.size, Color.cyan, block);
-                Vars.content.liquids().each(liquid -> {
-                    graph.balance(LiquidStorageMixin.class, liquid.id, false);
-                });
-                Vars.content.items().each(item -> {
-                    graph.balance(ItemStorageMixin.class, item.id, true);
-                });
+            if(graphEnabled && enabled && canConsume()) {
+                if(typeId == CONTROLLER_TYPE) {
+                    rotation += 10 * controllerScl();
+                }
+
+                if(typeId == BALANCER_TYPE && timer % 60 == 59) {
+                    Fx.healBlockFull.at(x, y, block.size, Color.cyan, block);
+                    Vars.content.liquids().each(liquid -> {
+                        graph.balance(LiquidStorageMixin.class, liquid.id, false);
+                    });
+                    Vars.content.items().each(item -> {
+                        graph.balance(ItemStorageMixin.class, item.id, true);
+                    });
+                }
             }
 
             if(tmp == -1) {
@@ -117,6 +151,12 @@ public class ME2Block extends AdvancedBlock {
             }
             tmp = enabled ? 1 : 0;
             timer++;
+
+            Core.app.post(() -> {
+                if(changed) {
+                    changed = false;
+                }
+            });
         }
 
         @Override

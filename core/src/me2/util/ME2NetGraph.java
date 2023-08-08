@@ -16,7 +16,18 @@ import mindustry.gen.Building;
  */
 public class ME2NetGraph {
     private final Seq<Building> buildings = new Seq<>();
+    public boolean isEnabledTmp = true;
     public Color debugColor;
+
+    /** Used to handle events for buildings */
+    public void onEditEvent() {
+        isEnabledTmp = isEnabled();
+        eachBuilding(b -> {
+            if(b instanceof ME2Block.ME2Build) {
+                ((ME2Block.ME2Build) b).onGraphEdit();
+            }
+        });
+    }
 
     /** Allows to get elements */
     public void eachBuilding(Cons<Building> cons) {
@@ -42,6 +53,7 @@ public class ME2NetGraph {
         if(!buildings.contains(source)) {
             register(source);
         }
+        onEditEvent();
     }
 
     /** Adds building to the graph if not null */
