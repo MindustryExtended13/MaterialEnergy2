@@ -19,12 +19,12 @@ import mindustry.graphics.Layer;
 import mindustry.mod.Mod;
 import java.util.Objects;
 
-import static me2.MaterialEnergy2Vars.*;
-
 import me2.world.*;
 import me2.world.ME2Bridge.ME2BridgeBuild;
 import me2.world.ME2Block.ME2Build;
 import me2.world.ME2Cable.ME2CableBuild;
+
+import static me2.MaterialEnergy2Vars.*;
 
 @SuppressWarnings("unused")
 public class MaterialEnergy2 extends Mod {
@@ -170,7 +170,7 @@ public class MaterialEnergy2 extends Mod {
             public int channelsUsage(Building building) {
                 if(building instanceof ME2Build) {
                     ME2Block build = (ME2Block) building.block;
-                    if(build.typeId == ME2Block.ADAPTER_TYPE) {
+                    if(build.typeId == ME2Block.ADAPTER_TYPE || build.typeId == ME2Block.BALANCER_TYPE) {
                         return 1;
                     }
                 }
@@ -207,9 +207,9 @@ public class MaterialEnergy2 extends Mod {
 
     public static Seq<Building> connectionDefault(Building building) {
         return building.proximity()
-                .select(b -> b instanceof ME2CableBuild)
-                .map(b -> (ME2CableBuild) b)
+                .select(b -> b instanceof ME2Build)
+                .map(b -> (ME2Build) b)
                 .map(b -> MaterialEnergy2Vars.getConnectionOf(building, b))
-                .select(b -> b instanceof ME2CableBuild);
+                .select(b -> b instanceof ME2Build);
     }
 }

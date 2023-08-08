@@ -13,9 +13,6 @@ import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.world.blocks.defense.MendProjector;
-
-import java.awt.*;
 
 public class ME2Block extends AdvancedBlock {
     public static final int
