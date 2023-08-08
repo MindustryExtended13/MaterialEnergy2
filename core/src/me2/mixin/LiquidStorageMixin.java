@@ -28,12 +28,30 @@ public class LiquidStorageMixin implements SimpleStorageMixin.ContentStorageMixi
 
     @Override
     public float extract(Building building, Liquid content, float amount) {
-        return 0;
+        float stored = amount(building, content);
+
+        if(stored >= amount) {
+            building.liquids.remove(content, amount);
+            return 0;
+        } else {
+            building.liquids.set(content, 0);
+            return amount - stored;
+        }
     }
 
     @Override
     public float receive(Building building, Liquid content, float amount) {
-        return 0;
+        float stored = amount(building, content);
+        float capacity = maximumAccepted(building, content);
+        float ost = capacity - stored;
+
+        if(ost >= amount) {
+            building.liquids.add(content, amount);
+            return 0;
+        } else {
+            building.liquids.set(content, capacity);
+            return amount - ost;
+        }
     }
 
     @Override

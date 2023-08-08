@@ -2,7 +2,7 @@ package me2.content;
 
 import me13.core.block.instance.EnumTextureMapping;
 import me13.core.block.instance.Layer;
-import me2.world.ME2Adapter;
+import me2.world.ME2Block;
 import me2.world.ME2Bridge;
 import me2.world.ME2Cable;
 import mindustry.type.Category;
@@ -10,7 +10,7 @@ import mindustry.type.ItemStack;
 import mindustry.world.Block;
 
 public class ME2Blocks {
-    public static Block cable, cableJunction, cableSwitch, adapter, bridge;
+    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer;
 
     public static void load() {
         cable = new ME2Cable("cable") {{
@@ -41,12 +41,21 @@ public class ME2Blocks {
             );
         }};
 
-        adapter = new ME2Adapter("adapter") {{
+        balancer = new ME2Block("balancer") {{
+            requirements(Category.effect, ItemStack.empty);
+            typeId = ME2Block.BALANCER_TYPE;
+        }};
+
+        adapter = new ME2Block("adapter") {{
+            rotate = true;
+            rotateDraw = false;
+            quickRotate = true;
             drawBase = false;
             requirements(Category.effect, ItemStack.empty);
             layers.add(new Layer(this, "-", EnumTextureMapping.ROT) {{
                 this.rotate = false;
             }});
+            typeId = ME2Block.ADAPTER_TYPE;
         }};
 
         cableJunction = new ME2Cable("cable-junction") {{

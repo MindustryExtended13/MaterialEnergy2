@@ -126,15 +126,13 @@ public class ME2NetGraph {
     public<T extends SimpleStorageMixin> void balance(Class<T> cl, int id, boolean roundness) {
         T mixin = ME2Configurator.getMixinByClass(cl);
         Seq<Building> extract = extractBuilds(cl, id);
-        Seq<Building> receive = receiveBuilds(cl, id);
         float total = extract.sumf(b -> {
             float amount = mixin.amount(b, id);
             return amount - mixin.extract(b, id, amount);
         });
+        Seq<Building> receive = receiveBuilds(cl, id);
         float cof = total / receive.size;
-        float roundnessDelta = 0;
         if(roundness) {
-            roundnessDelta = cof - Mathf.floor(cof);
             cof = Mathf.floor(cof);
         }
         float received = 0;
@@ -144,7 +142,7 @@ public class ME2NetGraph {
         }
 
         if(received < total) {
-            float left = total - received + (roundnessDelta * receive.size);
+            float left = total - received;
             for(Building building : receive) {
                 if(left <= 0) {
                     return;

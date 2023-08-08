@@ -23,7 +23,6 @@ import static me2.MaterialEnergy2Vars.*;
 
 import me2.world.*;
 import me2.world.ME2Bridge.ME2BridgeBuild;
-import me2.world.ME2Adapter.ME2AdapterBuild;
 import me2.world.ME2Block.ME2Build;
 import me2.world.ME2Cable.ME2CableBuild;
 
@@ -164,28 +163,44 @@ public class MaterialEnergy2 extends Mod {
 
             @Override
             public String name() {
-                return ME2Adapter.class.getSimpleName() + "Mixin";
+                return ME2Block.class.getSimpleName() + "Mixin";
             }
 
             @Override
             public int channelsUsage(Building building) {
-                return building instanceof ME2AdapterBuild ? 1 : 0;
+                if(building instanceof ME2Build) {
+                    ME2Block build = (ME2Block) building.block;
+                    if(build.typeId == ME2Block.ADAPTER_TYPE) {
+                        return 1;
+                    }
+                }
+                return 0;
             }
 
             @Override
             public Seq<Building> connections(Building building) {
-                if(!(building instanceof ME2AdapterBuild)) {
+                if(!(building instanceof ME2Build)) {
                     return new Seq<>();
                 }
 
-                ME2AdapterBuild build = (ME2AdapterBuild) building;
-                Seq<Building> out = new Seq<>();
-                if(build.enabledChild()) {
-                    out.add(build.nearby());
+                ME2Build build = (ME2Build) building;
+                ME2Block block = (ME2Block) build.block;
+
+                if(block.typeId == ME2Block.NO_TYPE_NO_C) {
+                    return new Seq<>();
                 }
-                Building x = MaterialEnergy2Vars.getConnectionOf(build, build.reversedNearby());
-                if(x != null) out.add(x);
-                return out;
+
+                if(block.typeId == ME2Block.ADAPTER_TYPE) {
+                    Seq<Building> out = new Seq<>();
+                    if(build.enabledChild()) {
+                        out.add(build.nearby());
+                    }
+                    Building x = MaterialEnergy2Vars.getConnectionOf(build, build.reversedNearby());
+                    if(x != null) out.add(x);
+                    return out;
+                }
+
+                return connectionDefault(building);
             }
         });
     }
