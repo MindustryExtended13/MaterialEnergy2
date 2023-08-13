@@ -8,6 +8,7 @@ import me2.world.ME2Block;
 import me2.world.ME2Bridge;
 import me2.world.ME2Cable;
 import me2.world.ME2TransportationBus;
+import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
@@ -34,6 +35,7 @@ public class ME2Blocks {
         quartzFurnace = new GenericCrafter("quartz-furnace") {{
             size = 2;
             craftTime = 60;
+            craftEffect = ((GenericCrafter) Blocks.siliconSmelter).craftEffect;
             outputItems = ItemStack.with(ME2Items.shiftingCrystal, 1);
             consumeItems(ItemStack.with(
                     ME2Items.chargedPureQuartzCrystal, 1,
