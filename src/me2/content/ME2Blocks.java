@@ -1,18 +1,25 @@
 package me2.content;
 
+import arc.graphics.Color;
+import arc.struct.Seq;
 import me13.core.block.instance.EnumTextureMapping;
 import me13.core.block.instance.Layer;
 import me2.world.ME2Block;
 import me2.world.ME2Bridge;
 import me2.world.ME2Cable;
 import me2.world.ME2TransportationBus;
+import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.draw.DrawDefault;
+import mindustry.world.draw.DrawFlame;
+import mindustry.world.draw.DrawMulti;
 
 public class ME2Blocks {
-    public static Block cable, cableJunction, cableSwitch, adapter, bridge,
-            balancer, exportBus, importBus, controller, terminal;
+    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer,
+            exportBus, importBus, controller, terminal, quartzFurnace;
 
     public static void load() {
         cable = new ME2Cable("cable") {{
@@ -22,6 +29,20 @@ public class ME2Blocks {
                 this.hand = ME2Cable.DEFAULT_HAND;
                 this.hand2 = ME2Cable.DEFAULT_SCHEME_HAND;
             }});
+        }};
+
+        quartzFurnace = new GenericCrafter("quartz-furnace") {{
+            size = 2;
+            craftTime = 60;
+            outputItems = ItemStack.with(ME2Items.shiftingCrystal, 1);
+            consumeItems(ItemStack.with(
+                    ME2Items.chargedPureQuartzCrystal, 1,
+                    ME2Items.chargedQuartzCrystal, 1,
+                    Items.blastCompound, 1,
+                    Items.coal, 1
+            ));
+            requirements(Category.crafting, ItemStack.empty);
+            drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
         }};
 
         terminal = new ME2Block("terminal") {{
