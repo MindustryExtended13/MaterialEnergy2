@@ -104,7 +104,7 @@ public class ItemStorageMixin implements SimpleStorageMixin.ContentStorageMixin<
             }
         }
 
-        return amount(building, content) > 0;
+        return true;
     }
 
     @Override
@@ -128,8 +128,7 @@ public class ItemStorageMixin implements SimpleStorageMixin.ContentStorageMixin<
             }
         }
 
-        return amount(building, content) < maximumAccepted(building, content)
-                && building.acceptItem(building, content);
+        return building.acceptItem(building, content);
     }
 
     @Override
