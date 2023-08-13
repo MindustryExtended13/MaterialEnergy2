@@ -1,29 +1,64 @@
 package me2.mixin;
 
 import me2.SimpleStorageMixin;
+import me2.world.ME2TransportationBus.ME2BusBuild;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
 import mindustry.world.consumers.Consume;
+import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.consumers.ConsumeLiquids;
 
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericCrafter.GenericCrafterBuild;
+import org.jetbrains.annotations.NotNull;
 
 public class LiquidStorageMixin implements SimpleStorageMixin.ContentStorageMixin<Liquid> {
+    private boolean _func_120490(@NotNull Building building, Liquid content) {
+        if(building.liquids == null || !building.block.hasLiquids || building instanceof ME2BusBuild) {
+            return false;
+        }
+        if(building instanceof GenericCrafterBuild) {
+            for(Consume consume : building.block.consumers) {
+                if(consume instanceof ConsumeLiquids) {
+                    ConsumeLiquids i = (ConsumeLiquids) consume;
+                    for(LiquidStack stack : i.liquids) {
+                        if(stack.liquid == content) {
+                            return true;
+                        }
+                    }
+                }
+                if(consume instanceof ConsumeLiquid) {
+                    ConsumeLiquid i = (ConsumeLiquid) consume;
+                    if(i.liquid == content) return true;
+                }
+            }
+            GenericCrafter crafter = (GenericCrafter) building.block;
+            if(crafter.outputLiquids != null) {
+                for(LiquidStack stack : crafter.outputLiquids) {
+                    if(stack.liquid == content) {
+                        return true;
+                    }
+                }
+            }
+            return crafter.outputLiquid != null && crafter.outputLiquid.liquid == content;
+        }
+        return true;
+    }
+
     @Override
     public void init() {
     }
 
     @Override
     public float maximumAccepted(Building building, Liquid content) {
-        return building.block.liquidCapacity;
+        return _func_120490(building, content) ? building.block.liquidCapacity : 0;
     }
 
     @Override
     public float amount(Building building, Liquid content) {
-        return building.liquids == null ? 0 : building.liquids.get(content);
+        return _func_120490(building, content) ? building.liquids.get(content) : 0;
     }
 
     @Override
@@ -69,9 +104,13 @@ public class LiquidStorageMixin implements SimpleStorageMixin.ContentStorageMixi
                     }
                 }
             }
+            if(consume instanceof ConsumeLiquid) {
+                ConsumeLiquid cons = (ConsumeLiquid) consume;
+                if(cons.liquid == content) return false;
+            }
         }
 
-        return amount(building, content) > 0;
+        return true;
     }
 
     @Override
@@ -81,15 +120,17 @@ public class LiquidStorageMixin implements SimpleStorageMixin.ContentStorageMixi
         }
 
         if(building instanceof GenericCrafterBuild) {
-            for(LiquidStack stack : ((GenericCrafter) building.block).outputLiquids) {
-                if(stack.liquid == content) {
-                    return false;
+            GenericCrafter crafter = (GenericCrafter) building.block;
+            if(crafter.outputLiquids != null) {
+                for(LiquidStack stack : crafter.outputLiquids) {
+                    if(stack.liquid == content) {
+                        return false;
+                    }
                 }
             }
         }
 
-        return amount(building, content) < maximumAccepted(building, content)
-                && building.acceptLiquid(building, content);
+        return building.acceptLiquid(building, content);
     }
 
     @Override

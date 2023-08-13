@@ -12,7 +12,7 @@ import mindustry.world.Block;
 
 public class ME2Blocks {
     public static Block cable, cableJunction, cableSwitch, adapter, bridge,
-            balancer, exportBus, importBus, controller;
+            balancer, exportBus, importBus, controller, terminal;
 
     public static void load() {
         cable = new ME2Cable("cable") {{
@@ -22,6 +22,13 @@ public class ME2Blocks {
                 this.hand = ME2Cable.DEFAULT_HAND;
                 this.hand2 = ME2Cable.DEFAULT_SCHEME_HAND;
             }});
+        }};
+
+        terminal = new ME2Block("terminal") {{
+            size = 3;
+            configurable = true;
+            typeId = ME2Block.TERMINAL_TYPE;
+            requirements(Category.effect, ItemStack.empty);
         }};
 
         controller = new ME2Block("me-controller") {{

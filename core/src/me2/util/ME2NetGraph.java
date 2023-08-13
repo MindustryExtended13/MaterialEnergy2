@@ -177,6 +177,18 @@ public class ME2NetGraph {
         return buildings.sum(MaterialEnergy2Vars::channelsUsage);
     }
 
+    /** Returns total maximum amount of mixin at id in the graph */
+    public<T extends SimpleStorageMixin> float amountCapacity(Class<T> cl, int id) {
+        T mixin = ME2Configurator.getMixinByClass(cl);
+        return buildings.sumf(b -> mixin.maximumAccepted(b, id));
+    }
+
+    /** Returns total amount of mixin at id in the graph */
+    public<T extends SimpleStorageMixin> float amount(Class<T> cl, int id) {
+        T mixin = ME2Configurator.getMixinByClass(cl);
+        return buildings.sumf(b -> mixin.amount(b, id));
+    }
+
     /** Returns list of buildings that can receive for mixin and id */
     public<T extends SimpleStorageMixin> Seq<Building> receiveBuilds(Class<T> cl, int id) {
         T mixin = ME2Configurator.getMixinByClass(cl);

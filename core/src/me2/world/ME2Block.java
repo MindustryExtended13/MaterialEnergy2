@@ -12,12 +12,11 @@ import me2.ME2Configurator;
 import me2.mixin.ItemStorageMixin;
 import me2.mixin.LiquidStorageMixin;
 import me2.util.ME2NetGraph;
+import me2.util.TerminalDialog;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
-import mindustry.ui.Styles;
 
 public class ME2Block extends AdvancedBlock {
     public static final int
@@ -28,6 +27,7 @@ public class ME2Block extends AdvancedBlock {
             TERMINAL_TYPE = 3,
             CONTROLLER_TYPE = 4;
 
+    public TextureRegion teamRegion;
     public TextureRegion rotatorRegion;
     public int typeId = NO_TYPE_NO_C;
 
@@ -50,7 +50,16 @@ public class ME2Block extends AdvancedBlock {
     @Override
     public void load() {
         super.load();
+        teamRegion = Core.atlas.find(name + "-team");
         rotatorRegion = Core.atlas.find(name + "-rotator");
+    }
+
+    @Override
+    protected TextureRegion[] icons() {
+        if(typeId == TERMINAL_TYPE) {
+            return new TextureRegion[] {region, teamRegion};
+        }
+        return super.icons();
     }
 
     public class ME2Build extends AdvancedBuild {
@@ -109,11 +118,27 @@ public class ME2Block extends AdvancedBlock {
             } else return mass[0] > 0;
         }
 
+        public String terminalName() {
+            return block.name + " Dialog";
+        }
+
+        @Override
+        public void buildConfiguration(Table table) {
+            if(typeId == TERMINAL_TYPE) {
+                new TerminalDialog(this).show();
+            }
+        }
+
         @Override
         public void draw() {
             super.draw();
             if(typeId == ME2Block.CONTROLLER_TYPE) {
                 Draw.rect(rotatorRegion, x, y, rotation);
+            }
+            if(typeId == ME2Block.TERMINAL_TYPE) {
+                Draw.color(team.color);
+                Draw.rect(teamRegion, x, y);
+                Draw.reset();
             }
         }
 
