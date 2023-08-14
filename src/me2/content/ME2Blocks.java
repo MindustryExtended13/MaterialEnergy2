@@ -24,13 +24,27 @@ import mindustry.world.draw.*;
 
 public class ME2Blocks {
     public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus, importBus,
-            controller, terminal, quartzFurnace, charger, growTurbine, quartzORe, quartzMine;
+            controller, terminal, quartzFurnace, charger, growTurbine, quartzORe, quartzMine, screen;
 
     public static void load() {
         quartzORe = new OreBlock(ME2Items.quartzCrystal) {{
             oreDefault = true;
             oreThreshold = 0.81f;
             oreScale = 23.47619f;
+        }};
+
+        screen = new ME2Block("storage-screen") {{
+            size = 2;
+            storageScreen();
+            typeId = ME2Block.SCREEN_TYPE;
+            textWidth = 8*2-((9/64f)*(8*2))*2;
+            requirements(Category.distribution, ItemStack.with(
+                    ME2Items.chargedPureQuartzCrystal, 12,
+                    ME2Items.quartzCrystal, 10,
+                    Items.copper, 75,
+                    Items.graphite, 50,
+                    Items.silicon, 25
+            ));
         }};
 
         cable = new ME2Cable("cable") {{

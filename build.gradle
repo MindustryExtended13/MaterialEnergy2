@@ -125,6 +125,7 @@ dependencies {
     implementation modCore(":block")
     implementation modCore(":logger")
     implementation modCore(":items")
+    implementation modCore(":text-draw")
     implementation modCore(":multicraft")
 
     //Informatronics integration
@@ -228,6 +229,8 @@ project(":core") {
         implementation modCore(":block")
         implementation modCore(":logger")
         implementation modCore(":items")
+        implementation modCore(":text-draw")
+        implementation modCore(":multicraft")
         implementation rootProject.project(":integration")
         annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
         compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"

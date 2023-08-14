@@ -4,9 +4,14 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.geom.Point2;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import me13.core.block.BlockAngles;
 import me13.core.block.instance.AdvancedBlock;
+import me13.core.graphics.TextDraw;
+import me13.core.items.IllegalItemSelection;
+import me13.core.multicraft.ImageInt;
 import me2.BuildingSettingsMixin;
 import me2.ME2Configurator;
 import me2.mixin.ItemStorageMixin;
@@ -15,8 +20,11 @@ import me2.util.ME2NetGraph;
 import me2.util.TerminalDialog;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
+import mindustry.type.Item;
+import mindustry.type.Liquid;
 
 public class ME2Block extends AdvancedBlock {
     public static final int
@@ -25,11 +33,13 @@ public class ME2Block extends AdvancedBlock {
             ADAPTER_TYPE = 1,
             BALANCER_TYPE = 2,
             TERMINAL_TYPE = 3,
-            CONTROLLER_TYPE = 4;
+            CONTROLLER_TYPE = 4,
+            SCREEN_TYPE = 5;
 
     public TextureRegion teamRegion;
     public TextureRegion rotatorRegion;
     public int typeId = NO_TYPE_NO_C;
+    public float textWidth = -1;
 
     public boolean noType() {
         return typeId == NO_TYPE || typeId == NO_TYPE_NO_C;
@@ -45,6 +55,23 @@ public class ME2Block extends AdvancedBlock {
     public ME2Block(String name) {
         super(name);
         update = true;
+    }
+
+    public void storageScreen() {
+        configurable = true;
+
+        config(Point2.class, (ME2Build build, Point2 content) -> {
+            boolean isItem = content.x == 1;
+            if(isItem) {
+                build.config = Vars.content.item(content.y);
+            } else {
+                build.config = Vars.content.liquid(content.y);
+            }
+        });
+
+        configClear((ME2Build build) -> {
+            build.config = null;
+        });
     }
 
     @Override
@@ -69,6 +96,15 @@ public class ME2Block extends AdvancedBlock {
         public float rotation;
         public int tmp = -1;
         public int timer = 0;
+        public UnlockableContent config;
+
+        public float getWidth() {
+            return textWidth;
+        }
+
+        public void text(String str) {
+            TextDraw.text(x, y, getWidth(), Color.cyan, str);
+        }
 
         public void onGraphEdit() {
             graphEnabled = graph.isEnabledTmp;
@@ -127,11 +163,31 @@ public class ME2Block extends AdvancedBlock {
             if(typeId == TERMINAL_TYPE) {
                 new TerminalDialog(this).show();
             }
+            if(typeId == SCREEN_TYPE) {
+                Seq<UnlockableContent> x = new Seq<>();
+                x.add(Vars.content.liquids());
+                x.add(Vars.content.items());
+                IllegalItemSelection.buildTable(table, x, () -> config, (c) -> this.config = c);
+            }
         }
 
         @Override
         public void draw() {
             super.draw();
+            if(typeId == ME2Block.SCREEN_TYPE) {
+                if(!enabled || !graphEnabled || config == null) {
+                    text("off");
+                } else {
+                    float amount = 0;
+                    if(config instanceof Item) {
+                        amount = graph.amount(ItemStorageMixin.class, config.id);
+                    }
+                    if(config instanceof Liquid) {
+                        amount = graph.amount(LiquidStorageMixin.class, config.id);
+                    }
+                    text(config.localizedName + "\n" + ImageInt.formatAmount(amount));
+                }
+            }
             if(typeId == ME2Block.CONTROLLER_TYPE) {
                 Draw.rect(rotatorRegion, x, y, rotation);
             }
