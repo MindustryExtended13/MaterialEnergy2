@@ -13,6 +13,7 @@ import me2.world.ME2Cable;
 import me2.world.ME2TransportationBus;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
+import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
@@ -21,13 +22,16 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
 
 public class ME2Blocks {
-    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer,
-            exportBus, importBus, controller, terminal, quartzFurnace, charger;
+    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus,
+            importBus, controller, terminal, quartzFurnace, charger, growTurbine;
 
     public static void load() {
         cable = new ME2Cable("cable") {{
             drawBase = false;
-            requirements(Category.distribution, ItemStack.empty);
+            requirements(Category.distribution, ItemStack.with(
+                    ME2Items.chargedQuartzCrystal, 1,
+                    ME2Items.pureQuartzCrystal, 1
+            ));
             layers.add(new Layer(this, "-", EnumTextureMapping.TF_TYPE) {{
                 this.hand = ME2Cable.DEFAULT_HAND;
                 this.hand2 = ME2Cable.DEFAULT_SCHEME_HAND;
@@ -39,15 +43,36 @@ public class ME2Blocks {
             size = 2;
             craftTime = 60;
             craftEffect = X;
-            outputItems = ItemStack.with(ME2Items.shiftingCrystal, 1);
+            outputItems = ItemStack.with(ME2Items.shiftingCrystal, 4);
             consumeItems(ItemStack.with(
                     ME2Items.chargedPureQuartzCrystal, 1,
                     ME2Items.chargedQuartzCrystal, 1,
                     Items.blastCompound, 1,
                     Items.coal, 1
             ));
-            requirements(Category.crafting, ItemStack.empty);
+            requirements(Category.crafting, ItemStack.with(
+                    Items.copper, 75, Items.graphite, 25
+            ));
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
+        }};
+
+        growTurbine = new GenericCrafter("grow-turbine") {{
+            size = 2;
+            craftTime = 600;
+            craftEffect = X;
+            hasLiquids = true;
+            liquidCapacity = 48;
+            outputItems = ItemStack.with(ME2Items.pureQuartzCrystal, 1);
+            consumeItems(ItemStack.with(ME2Items.quartzCrystal, 1, Items.sand, 2));
+            requirements(Category.crafting, ItemStack.with(
+                    Items.copper, 175, Items.graphite, 75, Items.silicon, 25
+            ));
+            consumeLiquid(Liquids.water, 0.4f);
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidRegion(Liquids.water),
+                    new DrawDefault()
+            );
         }};
 
         charger = new MultiCrafter("charger") {{
@@ -75,18 +100,29 @@ public class ME2Blocks {
                             new IOEntry(ItemStack.list(ME2Items.chargedPureQuartzCrystal, 1))
                     )
             };
-            requirements(Category.crafting, ItemStack.empty);
+            requirements(Category.crafting, ItemStack.with(
+                    Items.copper, 50, Items.graphite, 15
+            ));
         }};
 
         terminal = new ME2Block("terminal") {{
             size = 3;
             configurable = true;
             typeId = ME2Block.TERMINAL_TYPE;
-            requirements(Category.effect, ItemStack.empty);
+            requirements(Category.effect, ItemStack.with(
+                    ME2Items.shiftingCrystal, 24,
+                    Items.silicon, 50,
+                    Items.copper, 25
+            ));
         }};
 
         controller = new ME2Block("me-controller") {{
-            requirements(Category.effect, ItemStack.empty);
+            requirements(Category.effect, ItemStack.with(
+                    ME2Items.shiftingCrystal, 8,
+                    ME2Items.quartzCrystal, 12,
+                    Items.copper, 50,
+                    Items.lead, 25
+            ));
             typeId = ME2Block.CONTROLLER_TYPE;
             consumePowerDynamic((ME2Build b) -> {
                 return b.controllerScl() * 360;
@@ -94,11 +130,21 @@ public class ME2Blocks {
         }};
 
         importBus = new ME2TransportationBus("import-bus", true) {{
-            requirements(Category.distribution, ItemStack.empty);
+            requirements(Category.distribution, ItemStack.with(
+                    ME2Items.shiftingCrystal, 12,
+                    ME2Items.chargedQuartzCrystal, 8,
+                    ME2Items.pureQuartzCrystal, 7,
+                    Items.copper, 25
+            ));
         }};
 
         exportBus = new ME2TransportationBus("export-bus", false) {{
-            requirements(Category.distribution, ItemStack.empty);
+            requirements(Category.distribution, ItemStack.with(
+                    ME2Items.shiftingCrystal, 12,
+                    ME2Items.chargedQuartzCrystal, 8,
+                    ME2Items.pureQuartzCrystal, 7,
+                    Items.copper, 25
+            ));
             configurable = true;
         }};
 
@@ -106,7 +152,11 @@ public class ME2Blocks {
             isGate = true;
             drawBase = false;
             configurable = true;
-            requirements(Category.logic, ItemStack.empty);
+            requirements(Category.logic, ItemStack.with(
+                    ME2Items.chargedQuartzCrystal, 6,
+                    ME2Items.pureQuartzCrystal, 6,
+                    ME2Items.shiftingCrystal, 4
+            ));
             layers.add(
                     new SwitchLayer(this, "-enabled", EnumTextureMapping.REGION) {{
                         this.activates = true;
@@ -122,7 +172,13 @@ public class ME2Blocks {
         }};
 
         balancer = new ME2Block("balancer") {{
-            requirements(Category.effect, ItemStack.empty);
+            requirements(Category.effect, ItemStack.with(
+                    ME2Items.chargedQuartzCrystal, 10,
+                    ME2Items.pureQuartzCrystal, 10,
+                    ME2Items.shiftingCrystal, 8,
+                    Items.graphite, 45,
+                    Items.copper, 25
+            ));
             typeId = ME2Block.BALANCER_TYPE;
         }};
 
@@ -131,7 +187,13 @@ public class ME2Blocks {
             rotateDraw = false;
             quickRotate = true;
             drawBase = false;
-            requirements(Category.effect, ItemStack.empty);
+            requirements(Category.effect, ItemStack.with(
+                    ME2Items.chargedQuartzCrystal, 10,
+                    ME2Items.pureQuartzCrystal, 10,
+                    ME2Items.shiftingCrystal, 8,
+                    Items.graphite, 45,
+                    Items.copper, 25
+            ));
             layers.add(new Layer(this, "-", EnumTextureMapping.ROT) {{
                 this.rotate = false;
             }});
@@ -140,12 +202,20 @@ public class ME2Blocks {
 
         cableJunction = new ME2Cable("cable-junction") {{
             isJunction = true;
-            requirements(Category.distribution, ItemStack.empty);
+            requirements(Category.distribution, ItemStack.with(
+                    ME2Items.chargedQuartzCrystal, 10,
+                    ME2Items.pureQuartzCrystal, 10,
+                    Items.copper, 25
+            ));
         }};
 
         bridge = new ME2Bridge("bridge") {{
             drawBase = false;
-            requirements(Category.distribution, ItemStack.empty);
+            requirements(Category.distribution, ItemStack.with(
+                    ME2Items.chargedQuartzCrystal, 12,
+                    ME2Items.pureQuartzCrystal, 12,
+                    Items.copper, 35
+            ));
             layers.add(new Layer(this, "-", EnumTextureMapping.ROT) {{
                 this.rotate = false;
             }});
