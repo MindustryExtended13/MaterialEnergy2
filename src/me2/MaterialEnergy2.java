@@ -50,13 +50,6 @@ public class MaterialEnergy2 extends Mod {
                     debugModeEnabled = bool;
                 });
             });
-
-            //fix me13 core bug
-            ObjectMap<String, String> properties = Core.bundle.getProperties();
-            properties.put("ol.reverse",    Core.bundle.get("me2.reverse"));
-            properties.put("ol.disableAll", Core.bundle.get("me2.disableAll"));
-            properties.put("ol.enableAll",  Core.bundle.get("me2.enableAll"));
-            Core.bundle.setProperties(properties);
         });
 
         Events.run(EventType.Trigger.draw, () -> {
