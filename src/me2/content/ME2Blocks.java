@@ -1,26 +1,28 @@
 package me2.content;
 
-import arc.graphics.Color;
 import arc.struct.Seq;
 import me13.core.block.instance.EnumTextureMapping;
 import me13.core.block.instance.Layer;
+import me13.core.multicraft.DrawRecipe;
+import me13.core.multicraft.IOEntry;
+import me13.core.multicraft.MultiCrafter;
+import me13.core.multicraft.Recipe;
 import me2.world.ME2Block;
 import me2.world.ME2Bridge;
 import me2.world.ME2Cable;
 import me2.world.ME2TransportationBus;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
+import mindustry.entities.Effect;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.draw.DrawDefault;
-import mindustry.world.draw.DrawFlame;
-import mindustry.world.draw.DrawMulti;
+import mindustry.world.draw.*;
 
 public class ME2Blocks {
     public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer,
-            exportBus, importBus, controller, terminal, quartzFurnace;
+            exportBus, importBus, controller, terminal, quartzFurnace, charger;
 
     public static void load() {
         cable = new ME2Cable("cable") {{
@@ -32,10 +34,11 @@ public class ME2Blocks {
             }});
         }};
 
+        Effect X = ((GenericCrafter) Blocks.siliconSmelter).craftEffect;
         quartzFurnace = new GenericCrafter("quartz-furnace") {{
             size = 2;
             craftTime = 60;
-            craftEffect = ((GenericCrafter) Blocks.siliconSmelter).craftEffect;
+            craftEffect = X;
             outputItems = ItemStack.with(ME2Items.shiftingCrystal, 1);
             consumeItems(ItemStack.with(
                     ME2Items.chargedPureQuartzCrystal, 1,
@@ -45,6 +48,34 @@ public class ME2Blocks {
             ));
             requirements(Category.crafting, ItemStack.empty);
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
+        }};
+
+        charger = new MultiCrafter("charger") {{
+            craftEffect = X;
+            showNameTooltip = true;
+            drawer = new DrawRecipe() {{
+                drawers = new DrawBlock[] {
+                        new DrawMulti(
+                                new DrawDefault(),
+                                new DrawRegion("-top1")
+                        ),
+                        new DrawMulti(
+                                new DrawDefault(),
+                                new DrawRegion("-top2")
+                        )
+                };
+            }};
+            recipes = new Recipe[] {
+                    new Recipe(
+                            new IOEntry(ItemStack.list(ME2Items.quartzCrystal, 1), Seq.with(), 2),
+                            new IOEntry(ItemStack.list(ME2Items.chargedQuartzCrystal, 1))
+                    ),
+                    new Recipe(
+                            new IOEntry(ItemStack.list(ME2Items.pureQuartzCrystal, 1), Seq.with(), 1),
+                            new IOEntry(ItemStack.list(ME2Items.chargedPureQuartzCrystal, 1))
+                    )
+            };
+            requirements(Category.crafting, ItemStack.empty);
         }};
 
         terminal = new ME2Block("terminal") {{
