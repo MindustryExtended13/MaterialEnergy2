@@ -209,9 +209,13 @@ public class MaterialEnergy2 extends Mod {
                     if(
                             build.typeId == ME2Block.ADAPTER_TYPE  ||
                             build.typeId == ME2Block.BALANCER_TYPE ||
-                            build.typeId == ME2Block.TERMINAL_TYPE
+                            build.typeId == ME2Block.TERMINAL_TYPE ||
+                            build.typeId == ME2Block.SCREEN_TYPE
                     ) {
                         return 1;
+                    }
+                    if(build.typeId == ME2Block.STORAGE_TYPE) {
+                        return build.storageTier;
                     }
                 }
                 return 0;

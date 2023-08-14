@@ -23,6 +23,7 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
 
 public class ME2Blocks {
+    public static ME2Block[] storages = new ME2Block[5];
     public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus, importBus,
             controller, terminal, quartzFurnace, charger, growTurbine, quartzORe, quartzMine, screen;
 
@@ -33,12 +34,41 @@ public class ME2Blocks {
             oreScale = 23.47619f;
         }};
 
+        int[] j = new int[] {1, 4, 16, 64};
+        for(int i = 0; i < 4; i++) {
+            int s = j[i];
+            int finalI = i;
+            storages[i] = new ME2Block(s + "k-storage") {{
+                typeId = ME2Block.STORAGE_TYPE;
+                itemCapacity = s * 1000;
+                hasItems = true;
+                size = 2;
+                storageTier = finalI + 1;
+                requirements(Category.effect, ItemStack.with(
+                        ME2Items.shiftingCrystal, 10 * s,
+                        Items.titanium, 100 * s
+                ));
+            }};
+        }
+
+        storages[4] = new ME2Block("liquid-storage") {{
+            typeId = ME2Block.STORAGE_TYPE;
+            liquidCapacity = 8000;
+            hasLiquids = true;
+            size = 2;
+            storageTier = 1;
+            requirements(Category.effect, ItemStack.with(
+                    ME2Items.shiftingCrystal, 100,
+                    Items.titanium, 1000
+            ));
+        }};
+
         screen = new ME2Block("storage-screen") {{
             size = 2;
             storageScreen();
             typeId = ME2Block.SCREEN_TYPE;
             textWidth = 8*2-((9/64f)*(8*2))*2;
-            requirements(Category.distribution, ItemStack.with(
+            requirements(Category.effect, ItemStack.with(
                     ME2Items.chargedPureQuartzCrystal, 12,
                     ME2Items.quartzCrystal, 10,
                     Items.copper, 75,

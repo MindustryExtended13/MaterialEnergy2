@@ -34,11 +34,13 @@ public class ME2Block extends AdvancedBlock {
             BALANCER_TYPE = 2,
             TERMINAL_TYPE = 3,
             CONTROLLER_TYPE = 4,
-            SCREEN_TYPE = 5;
+            SCREEN_TYPE = 5,
+            STORAGE_TYPE = 6;
 
     public TextureRegion teamRegion;
     public TextureRegion rotatorRegion;
     public int typeId = NO_TYPE_NO_C;
+    public int storageTier = 0;
     public float textWidth = -1;
 
     public boolean noType() {
@@ -156,6 +158,20 @@ public class ME2Block extends AdvancedBlock {
 
         public String terminalName() {
             return block.name + " Dialog";
+        }
+
+        @Override
+        public boolean acceptItem(Building source, Item item) {
+            return (typeId == STORAGE_TYPE && hasItems) ?
+                    items.get(item) < getMaximumAccepted(item) :
+                    super.acceptItem(source, item);
+        }
+
+        @Override
+        public boolean acceptLiquid(Building source, Liquid liquid) {
+            return (typeId == STORAGE_TYPE && hasLiquids) ?
+                    liquids.get(liquid) < liquidCapacity :
+                    super.acceptLiquid(source, liquid);
         }
 
         @Override
