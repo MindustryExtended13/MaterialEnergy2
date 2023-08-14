@@ -23,8 +23,8 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
 
 public class ME2Blocks {
-    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus,
-            importBus, controller, terminal, quartzFurnace, charger, growTurbine, quartzORe;
+    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus, importBus,
+            controller, terminal, quartzFurnace, charger, growTurbine, quartzORe, quartzMine;
 
     public static void load() {
         quartzORe = new OreBlock(ME2Items.quartzCrystal) {{
@@ -46,6 +46,21 @@ public class ME2Blocks {
         }};
 
         Effect X = ((GenericCrafter) Blocks.siliconSmelter).craftEffect;
+        quartzMine = new GenericCrafter("quartz-mine") {{
+            size = 2;
+            craftTime = 300;
+            craftEffect = X;
+            outputItems = ItemStack.with(ME2Items.quartzCrystal, 2);
+            consumePower(1);
+            requirements(Category.production, ItemStack.with(
+                    Items.copper, 175, Items.graphite, 125
+            ));
+            drawer = new DrawMulti(new DrawDefault(), new DrawRegion("-rotator") {{
+                this.rotateSpeed = 5;
+                this.spinSprite = true;
+            }}, new DrawRegion("-top"));
+        }};
+
         quartzFurnace = new GenericCrafter("quartz-furnace") {{
             size = 2;
             craftTime = 60;

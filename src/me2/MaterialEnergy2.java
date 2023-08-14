@@ -13,6 +13,7 @@ import me2.mixin.ItemStorageMixin;
 import me2.mixin.LiquidStorageMixin;
 import me2.util.ME2NetGraph;
 import mindustry.Vars;
+import mindustry.content.Planets;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
