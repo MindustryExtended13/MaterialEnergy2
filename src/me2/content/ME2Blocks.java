@@ -18,14 +18,21 @@ import mindustry.entities.Effect;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
 
 public class ME2Blocks {
     public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus,
-            importBus, controller, terminal, quartzFurnace, charger, growTurbine;
+            importBus, controller, terminal, quartzFurnace, charger, growTurbine, quartzORe;
 
     public static void load() {
+        quartzORe = new OreBlock(ME2Items.quartzCrystal) {{
+            oreDefault = true;
+            oreThreshold = 0.81f;
+            oreScale = 23.47619f;
+        }};
+
         cable = new ME2Cable("cable") {{
             drawBase = false;
             requirements(Category.distribution, ItemStack.with(
