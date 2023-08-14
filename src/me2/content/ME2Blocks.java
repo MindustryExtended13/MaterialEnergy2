@@ -40,6 +40,7 @@ public class ME2Blocks {
             int finalI = i;
             storages[i] = new ME2Block(s + "k-storage") {{
                 typeId = ME2Block.STORAGE_TYPE;
+                health = 200 * finalI;
                 itemCapacity = s * 1000;
                 hasItems = true;
                 size = 2;
@@ -55,6 +56,7 @@ public class ME2Blocks {
             typeId = ME2Block.STORAGE_TYPE;
             liquidCapacity = 8000;
             hasLiquids = true;
+            health = 200;
             size = 2;
             storageTier = 1;
             requirements(Category.effect, ItemStack.with(
@@ -65,6 +67,7 @@ public class ME2Blocks {
 
         screen = new ME2Block("storage-screen") {{
             size = 2;
+            health = 100;
             storageScreen();
             typeId = ME2Block.SCREEN_TYPE;
             textWidth = 8*2-((9/64f)*(8*2))*2;
@@ -79,6 +82,7 @@ public class ME2Blocks {
 
         cable = new ME2Cable("cable") {{
             drawBase = false;
+            health = 50;
             requirements(Category.distribution, ItemStack.with(
                     ME2Items.chargedQuartzCrystal, 1,
                     ME2Items.pureQuartzCrystal, 1
@@ -92,6 +96,7 @@ public class ME2Blocks {
         Effect X = ((GenericCrafter) Blocks.siliconSmelter).craftEffect;
         quartzMine = new GenericCrafter("quartz-mine") {{
             size = 2;
+            health = 360;
             craftTime = 300;
             craftEffect = X;
             outputItems = ItemStack.with(ME2Items.quartzCrystal, 2);
@@ -107,6 +112,7 @@ public class ME2Blocks {
 
         quartzFurnace = new GenericCrafter("quartz-furnace") {{
             size = 2;
+            health = 360;
             craftTime = 60;
             craftEffect = X;
             outputItems = ItemStack.with(ME2Items.shiftingCrystal, 4);
@@ -124,6 +130,7 @@ public class ME2Blocks {
 
         growTurbine = new GenericCrafter("grow-turbine") {{
             size = 2;
+            health = 360;
             craftTime = 600;
             craftEffect = X;
             hasLiquids = true;
@@ -143,6 +150,7 @@ public class ME2Blocks {
 
         charger = new MultiCrafter("charger") {{
             craftEffect = X;
+            health = 360;
             showNameTooltip = true;
             drawer = new DrawRecipe() {{
                 drawers = new DrawBlock[] {
@@ -173,6 +181,7 @@ public class ME2Blocks {
 
         terminal = new ME2Block("terminal") {{
             size = 3;
+            health = 240;
             configurable = true;
             typeId = ME2Block.TERMINAL_TYPE;
             requirements(Category.effect, ItemStack.with(
@@ -189,6 +198,7 @@ public class ME2Blocks {
                     Items.copper, 50,
                     Items.lead, 25
             ));
+            health = 360;
             typeId = ME2Block.CONTROLLER_TYPE;
             consumePowerDynamic((ME2Build b) -> {
                 return b.controllerScl() * 360;
@@ -196,6 +206,7 @@ public class ME2Blocks {
         }};
 
         importBus = new ME2TransportationBus("import-bus", true) {{
+            health = 80;
             requirements(Category.distribution, ItemStack.with(
                     ME2Items.shiftingCrystal, 12,
                     ME2Items.chargedQuartzCrystal, 8,
@@ -205,6 +216,7 @@ public class ME2Blocks {
         }};
 
         exportBus = new ME2TransportationBus("export-bus", false) {{
+            health = 80;
             requirements(Category.distribution, ItemStack.with(
                     ME2Items.shiftingCrystal, 12,
                     ME2Items.chargedQuartzCrystal, 8,
@@ -215,6 +227,7 @@ public class ME2Blocks {
         }};
 
         cableSwitch = new ME2Cable("cable-switch") {{
+            health = 60;
             isGate = true;
             drawBase = false;
             configurable = true;
@@ -238,6 +251,7 @@ public class ME2Blocks {
         }};
 
         balancer = new ME2Block("balancer") {{
+            health = 180;
             requirements(Category.effect, ItemStack.with(
                     ME2Items.chargedQuartzCrystal, 10,
                     ME2Items.pureQuartzCrystal, 10,
@@ -249,6 +263,7 @@ public class ME2Blocks {
         }};
 
         adapter = new ME2Block("adapter") {{
+            health = 100;
             rotate = true;
             rotateDraw = false;
             quickRotate = true;
@@ -267,6 +282,7 @@ public class ME2Blocks {
         }};
 
         cableJunction = new ME2Cable("cable-junction") {{
+            health = 80;
             isJunction = true;
             requirements(Category.distribution, ItemStack.with(
                     ME2Items.chargedQuartzCrystal, 10,
@@ -276,6 +292,7 @@ public class ME2Blocks {
         }};
 
         bridge = new ME2Bridge("bridge") {{
+            health = 80;
             drawBase = false;
             requirements(Category.distribution, ItemStack.with(
                     ME2Items.chargedQuartzCrystal, 12,
