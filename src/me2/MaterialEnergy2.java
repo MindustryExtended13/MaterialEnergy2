@@ -4,16 +4,15 @@ import arc.Core;
 import arc.Events;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import me13.core.logger.LogBinder;
 import me2.content.ME2Blocks;
 import me2.content.ME2Items;
+import me2.content.ME2Tech;
 import me2.mixin.ItemStorageMixin;
 import me2.mixin.LiquidStorageMixin;
 import me2.util.ME2NetGraph;
 import mindustry.Vars;
-import mindustry.content.Planets;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
@@ -89,6 +88,8 @@ public class MaterialEnergy2 extends Mod {
         ME2Items.load();
         LOGGER.info("BLOCKS", "Loading...");
         ME2Blocks.load();
+        LOGGER.info("TECH", "Loading...");
+        ME2Tech.load();
     }
 
     @Override
