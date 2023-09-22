@@ -5,9 +5,11 @@ import arc.Events;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.struct.Seq;
+import logicfix.LogicFixRegisterEvent;
 import me13.core.logger.LogBinder;
 import me2.content.ME2Blocks;
 import me2.content.ME2Items;
+import me2.content.ME2Logic;
 import me2.content.ME2Tech;
 import me2.mixin.ItemStorageMixin;
 import me2.mixin.LiquidStorageMixin;
@@ -49,6 +51,10 @@ public class MaterialEnergy2 extends Mod {
                     debugModeEnabled = bool;
                 });
             });
+
+            final LogicFixRegisterEvent event = new LogicFixRegisterEvent();
+            ME2Logic.REGISTRY.register(event);
+            event.process();
         });
 
         Events.run(EventType.Trigger.draw, () -> {

@@ -128,9 +128,8 @@ dependencies {
     implementation modCore(":text-draw")
     implementation modCore(":multicraft")
 
-    //Informatronics integration
-    //implementation "com.github.MindustryExtended13.informatronics:tools:1.0"
-    //compileOnly "com.github.MindustryExtended13.informatronics:integration:1.0"
+    //LogicFix integration
+    implementation "com.github.MindustryExtended13.LogicFix:core:0679d2f285"
 }
 
 //force arc version

@@ -1,6 +1,5 @@
 package me2.content;
 
-import arc.func.Cons;
 import arc.struct.Seq;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
