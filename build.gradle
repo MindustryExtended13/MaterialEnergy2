@@ -8,16 +8,6 @@ sourceSets.main {
     resources.srcDirs = ["assets"]
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        url 'https://maven.xpdustry.com/anuken'
-    }
-    maven {
-        url 'https://www.jitpack.io'
-    }
-}
-
 ext {
     //the build number that this mod is made for
     mindustryVersion = 'v145'
@@ -84,7 +74,9 @@ allprojects {
 
     repositories {
         mavenCentral()
-
+        maven {
+            url 'https://maven.xpdustry.com/anuken'
+        }
         maven {
             url 'https://www.jitpack.io'
         }
