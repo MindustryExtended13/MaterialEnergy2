@@ -29,7 +29,7 @@ ext {
             name = name.substring(1);
         }
 
-        return "com.github.MindustryExtended13.Me13Core:$name:533faaf615"
+        return "com.github.MindustryExtended13.Me13Core:$name:389ce0eb25"
     }
 }
 
@@ -127,6 +127,7 @@ dependencies {
     implementation modCore(":items")
     implementation modCore(":text-draw")
     implementation modCore(":multicraft")
+    implementation modCore(":bundle2")
 
     //LogicFix integration
     implementation "com.github.MindustryExtended13.LogicFix:core:0679d2f285"

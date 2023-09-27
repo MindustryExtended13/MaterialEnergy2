@@ -40,7 +40,7 @@ public class ME2Blocks {
             int finalI = i;
             storages[i] = new ME2Block(s + "k-storage") {{
                 typeId = ME2Block.STORAGE_TYPE;
-                health = 200 * finalI;
+                health = 200 * (finalI + 1);
                 itemCapacity = s * 1000;
                 hasItems = true;
                 size = 2;

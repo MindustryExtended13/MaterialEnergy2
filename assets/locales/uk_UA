@@ -1,0 +1,146 @@
+// Material Energy 2 UA bundles
+--vardef B = me2
+
+--cd %B%.
+    reload = Перезавантажити
+    exit = Вихід
+--cde
+
+--cd setting.%B%-debug-mode.
+    name = M.E. Дослідник
+    description = Показує M.E. системи використовуючи кольори, тільки для перевірки
+--cde
+
+--cd me13.config.bundle.
+    reverse = Поміняти значення містами
+    disableAll = Вимкнути всі значення
+    enableAll = Увімкнути всі значення
+--cde
+
+// --- region items ---
+--vardef quartz = quartz-crystal.
+--cd item.%B%-
+    --cd shifting-crystal.
+        name = Кристал простору
+        description = Кристал який позволяє робити щось з простором ну це ж кристал простору
+    --cde
+
+    --cd %quartz%
+        name = Кварцовий кристал
+        description = Основний матеріал в моді який використовується в більшості блоків і механік
+    --cde
+
+    --cd charged-%quartz%
+        name = Заряженний кварцовий кристал
+        description = Заряженна версія кварцового кристалу
+    --cde
+
+    --cd pure-
+        --cd %quartz%
+            name = Чистий кварцовий кристал
+            description = Чиста версія кварцового кристалу. Він не існує в брудному середовищі планет тому його можна лише виростити
+        --cde
+
+        --cd charged-%quartz%
+            name = Заряженний чистий кварцовий кристал
+            description = Чиста версія кварцового кристалу. Заряженна версія чистого кварцового кристалу
+        --cde
+    --cde
+--cde
+
+// --- region blocks ---
+--vardef Q = quartz
+--vardef tmp = k-storage.
+--vardef sname = %tmp%name
+--vardef sdesc = %tmp%description
+--vardef names = к М.Е. Сховище
+--vardef desc5 = M.E. Сховище яке можне зберігати до
+--cd block.%B%-
+    // 1000 items
+    1%sname% = 1%names%
+    1%sdesc% = %desc5% 1000 предметів
+    // 4000 items
+    4%sname% = 4%names%
+    4%sdesc% = %desc5% 4000 предметів
+    // 16000 items
+    16%sname% = 16%names%
+    16%sdesc% = %desc5% 16000 предметів
+    // 64000 items
+    64%sname% = 64%names%
+    64%sdesc% = %desc5% 64000 предметів
+
+    --cd liquid-storage.
+        name = Рідке сховище М.Е. системи
+        description = Версія M.E. сховищя для рідин. може зберігати до 8000л рідини (можна зберігати скільки завгодно рідин одночасно)
+    --cde
+
+    --cd cable.
+        name = M.E. Кабель
+        description = кабель який використовуюється для транспортування M.E. данних по системі
+    --cde
+
+    --cd %Q%-mine.
+        name = Кварцова шахта
+        description = Шахта яка використовується для того щоб добувати кварц з під землі планети
+    --cde
+
+    --cd %Q%-furnace.
+        name = Кварцова пічка
+        description = Пічка яка виробляє кристали простору з вибухової суміші, вугілля та кварцу
+    --cde
+
+    --cd grow-turbine.
+        name = Турбіна для росту
+        description = Є інкубатором в якому можна рости кварц щоб виріс чистий кварцовий кристал
+    --cde
+
+    --cd charger.
+        name = Зарядний пристрій
+        description = Перетворює кварц використовуючи енергію на заряженну версію
+    --cde
+
+    --cd terminal.
+        name = M.E. Термінал
+        description = Термінал який показує що в середені М.Е. системи
+    --cde
+
+    --cd me-controller.
+        name = M.E. Контроллер
+        description = Збільшує кількість каналів на 32. За умовчанням можна лише 8 каналів
+    --cde
+
+    --cd import-bus.
+        name = Шина імпорту
+        description = Імпортує предмети/рідини до M.E. системи
+    --cde
+
+    --cd export-bus.
+        name = Шина експорту
+        description = Експортує предмети/рідини з M.E. системи
+    --cde
+
+    --cd cable-switch.
+        name = М.Е. Кабель лоігики
+        description = Може бути вімкнений чи викнений. коли вимкнений то система поділяється на 2 частини і не мають оступу до друг друга
+    --cde
+
+    --cd balancer.
+         name = Балансування системи
+         description = Розпріділяє те що в середені М.Е. системи порівну до всіх блоків що підключенні
+    --cde
+
+    --cd adapter.
+        name = M.E. Aдаптер
+        description = Дозваляє підключати майже будь-які блоки до М.Е. системи які можуть використовуватись навіть як М.Е. сховище
+    --cde
+
+    --cd cable-junction.
+        name = Кабельне перехрестя
+        description = Версія кабелю яка працює як перехрестя
+    --cde
+
+    --cd bridge.
+        name = M.E. Bridge
+        description = Міст для М.Е. кабелю
+    --cde
+--cde

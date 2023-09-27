@@ -41,7 +41,7 @@ public class TerminalDialog extends BaseDialog {
         cont.clearChildren();
 
         buttons.defaults().size(250, 50);
-        buttons.button("@exit", Icon.left, this::hide);
+        buttons.button("@me2.exit", Icon.left, this::hide);
         buttons.button("@me2.reload", Icon.rotate, this::buildHandler);
 
         int rows = Core.graphics.getWidth()/350;

@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.struct.Seq;
 import logicfix.LogicFixRegisterEvent;
+import me13.core.bundle2.Bundle2;
 import me13.core.logger.LogBinder;
 import me2.content.ME2Blocks;
 import me2.content.ME2Items;
@@ -90,6 +91,8 @@ public class MaterialEnergy2 extends Mod {
 
     @Override
     public void loadContent() {
+        Bundle2.load(Vars.mods.getMod(MaterialEnergy2.class));
+
         LOGGER.info("ITEMS", "Loading...");
         ME2Items.load();
         LOGGER.info("BLOCKS", "Loading...");

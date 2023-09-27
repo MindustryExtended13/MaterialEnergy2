@@ -1,0 +1,152 @@
+// Material Energy 2 english (USA) bundles
+--vardef B = me2
+
+--cd %B%.
+    reload = Reload
+    exit = Exit
+--cde
+
+--cd setting.%B%-debug-mode.
+    name = M.E. Debugger
+    description = shows M.E. systems using colors, for test only
+--cde
+
+--cd me13.config.bundle.
+    reverse = Reverse
+    disableAll = Disable all
+    enableAll = Enable all
+--cde
+
+--cd logicfix.statements.%B%.
+    control = Control
+    sensoritem = Sensor&Item
+    sensorliquid = Sensor&Liquid
+--cde
+
+// --- region items ---
+--vardef quartz = quartz-crystal.
+--cd item.%B%-
+    --cd shifting-crystal.
+        name = Shifting crystal
+        description = What I need to print? It's just crystal
+    --cde
+
+    --cd %quartz%
+        name = Quartz crystal
+        description = Main item in this mod, need to build large part of the blocks
+    --cde
+
+    --cd charged-%quartz%
+        name = Charged quartz crystal
+        description = Charged version of quartz crystal
+    --cde
+
+    --cd pure-
+        --cd %quartz%
+            name = Pure quartz crystal
+            description = Pure version of quartz crystal
+        --cde
+
+        --cd charged-%quartz%
+            name = Charged pure quartz crystal
+            description = Pure version of quartz crystal. Charged version of pure quartz crystal
+        --cde
+    --cde
+--cde
+
+// --- region blocks ---
+--vardef Q = quartz
+--vardef tmp = k-storage.
+--vardef sname = %tmp%name
+--vardef sdesc = %tmp%description
+--vardef names = k M.E. storage
+--vardef desc5 = M.E. storage that can storage
+--cd block.%B%-
+    // 1000 items
+    1%sname% = 1%names%
+    1%sdesc% = %desc5% 1000 items
+    // 4000 items
+    4%sname% = 4%names%
+    4%sdesc% = %desc5% 4000 items
+    // 16000 items
+    16%sname% = 16%names%
+    16%sdesc% = %desc5% 16000 items
+    // 64000 items
+    64%sname% = 64%names%
+    64%sdesc% = %desc5% 64000 items
+
+    --cd liquid-storage.
+        name = M.E. liquid storage
+        description = liquid version of M.E. storage. can storage 8000 liquids of all types
+    --cde
+
+    --cd cable.
+        name = M.E. Cable
+        description = cable that used for transport M.E. data to all system
+    --cde
+
+    --cd %Q%-mine.
+        name = Quartz mine
+        description = Mine that can mine %Q% from serpulo underground layers
+    --cde
+
+    --cd %Q%-furnace.
+        name = Quartz furnace
+        description = Furnace that produces shifting crystals from %Q%, blast compound and coal
+    --cde
+
+    --cd grow-turbine.
+        name = Grow turbine
+        description = Seed %Q% in sand and feed with water to grow pure %Q%
+    --cde
+
+    --cd charger.
+        name = Charger
+        description = Uses %Q% to the charged using energy
+    --cde
+
+    --cd terminal.
+        name = M.E. Terminal
+        description = Terminal that shows system contents
+    --cde
+
+    --cd me-controller.
+        name = M.E. Controller
+        description = Increases channel amount by 32 channels
+    --cde
+
+    --cd import-bus.
+        name = Import bus
+        description = Imports items/liquids to the M.E. system
+    --cde
+
+    --cd export-bus.
+        name = Export bus
+        description = Exports items/liquid from the M.E. system
+    --cde
+
+    --cd cable-switch.
+        name = Switch cable
+        description = If enabled, splits M.E. system by 2 parts
+    --cde
+
+    --cd balancer.
+         name = Balancer
+         description = Balances M.E. system contents
+    --cde
+
+    --cd adapter.
+        name = M.E. Adapter
+        description = Uses block as M.E. storage. if block can extract when items can be extracted. if block can receive when items can be imported
+    --cde
+
+    --cd cable-junction.
+        name = Cable Junction
+        description = Junction cable that works as M.E. cable but junction
+    --cde
+
+    --cd bridge.
+        name = M.E. Bridge
+        description = Bridge that works as M.E. cable but bridge
+    --cde
+--cde
