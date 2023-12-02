@@ -19,8 +19,8 @@
 
 --cd logicfix.statements.%B%.
     control = Control
-    sensoritem = Sensor&Item
-    sensorliquid = Sensor&Liquid
+    sensoritem = Sensor Item
+    sensorliquid = Sensor Liquid
 --cde
 
 // --- region items ---

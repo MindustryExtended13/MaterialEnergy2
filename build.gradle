@@ -162,20 +162,48 @@ task jarAndroid{
     }
 }
 
-jar{
-    archiveFileName = "${project.archivesBaseName}Desktop.jar"
+jar {
+    var prop = gradle.startParameter.projectProperties
+    String asString = null
 
-    from{
-        configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
+    if(prop.containsKey('ex')) {
+        asString = "${archivesBaseName}Desktop.${prop.get('ex')}"
+    } else {
+        println('Using default file exception (jar)')
+        asString = "${archivesBaseName}Desktop.jar"
+    }
+
+    archiveFileName = asString
+
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
     }
 
     from(rootDir) {
         include "mod.json"
         include "icon.png"
     }
+
+    doLast {
+        if(prop.containsKey('path')) {
+            copy {
+                println("Copy file ${asString} to destonation")
+                from layout.buildDirectory.file("libs/$asString")
+                into layout.buildDirectory.dir(prop.get('path'))
+            }
+        }
+
+        if(prop.containsKey('m')) {
+            exec {
+                commandLine 'cmd', '/c', "\"${prop.get('m')}\""
+            }
+        }
+    }
 }
 
-task deploy(type: Jar){
+task deploy(type: Jar) {
     dependsOn jarAndroid
     dependsOn jar
     archiveFileName = "${project.archivesBaseName}.jar"
@@ -188,32 +216,6 @@ task deploy(type: Jar){
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
         }
     }
-}
-
-task zipJar(type: Jar) {
-    archiveFileName = "${project.archivesBaseName}Desktop.zip"
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    from {
-        configurations.runtimeClasspath.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
-
-    from("$buildDir/classes/java/main") {
-        include "**"
-    }
-
-    from("$buildDir/resources/main") {
-        include "**"
-    }
-
-    from(rootDir) {
-        include "mod.json"
-        include "icon.png"
-    }
-
-    dependsOn 'jar'
 }
 
 project(":core") {

@@ -24,8 +24,8 @@ import mindustry.world.draw.*;
 
 public class ME2Blocks {
     public static ME2Block[] storages = new ME2Block[5];
-    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus, importBus,
-            controller, terminal, quartzFurnace, charger, growTurbine, quartzORe, quartzMine, screen;
+    public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus, importBus, controller,
+            terminal, quartzFurnace, charger, growTurbine, quartzORe, quartzMine, screen, largeScreen;
 
     public static void load() {
         quartzORe = new OreBlock(ME2Items.quartzCrystal) {{
@@ -70,13 +70,28 @@ public class ME2Blocks {
             health = 100;
             storageScreen();
             typeId = ME2Block.SCREEN_TYPE;
-            textWidth = 8*2-((9/64f)*(8*2))*2;
+            textWidth = 8 * 2 - ((9 / 64f) * (8 * 2)) * 2;
             requirements(Category.effect, ItemStack.with(
                     ME2Items.chargedPureQuartzCrystal, 12,
                     ME2Items.quartzCrystal, 10,
                     Items.copper, 75,
                     Items.graphite, 50,
                     Items.silicon, 25
+            ));
+        }};
+
+        largeScreen = new ME2Block("large-storage-screen") {{
+            size = 4;
+            health = 400;
+            storageScreen();
+            typeId = ME2Block.SCREEN_TYPE;
+            textWidth = 8 * 4 - ((9 / 128f) * (8 * 4)) * 2;
+            requirements(Category.effect, ItemStack.with(
+                    ME2Items.chargedPureQuartzCrystal, 48,
+                    ME2Items.quartzCrystal, 40,
+                    Items.copper, 300,
+                    Items.graphite, 200,
+                    Items.silicon, 100
             ));
         }};
 

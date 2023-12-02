@@ -4,14 +4,16 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
+import arc.struct.FloatSeq;
+import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import me13.core.items.IllegalItemSelection;
 import me13.core.items.multiitem.MultiItemData;
 import me13.core.items.multiitem.MultiItemSelection;
+import me2.MaterialEnergy2Vars;
 import me2.mixin.ItemStorageMixin;
 import me2.mixin.LiquidStorageMixin;
-import me2.world.ME2Block;
 import mindustry.Vars;
 import mindustry.ctype.ContentType;
 import mindustry.gen.Building;
@@ -19,6 +21,8 @@ import mindustry.type.Item;
 import mindustry.type.Liquid;
 
 public class ME2TransportationBus extends ME2Block {
+    public static final Seq<Building> liquidDumpBuffer = new Seq<>();
+    public static final FloatSeq liquidDumpBuffer2 = new FloatSeq();
     public TextureRegion topRegion;
     public boolean isImport;
 
@@ -67,6 +71,38 @@ public class ME2TransportationBus extends ME2Block {
         }
 
         @Override
+        public void dumpLiquid(Liquid liquid, float scaling, int outputDir) {
+            int dump = this.cdump;
+            if (!(this.liquids.get(liquid) <= 1.0E-4F)) {
+                if (!Vars.net.client() && Vars.state.isCampaign() && this.team == Vars.state.rules.defaultTeam) {
+                    liquid.unlock();
+                }
+
+                for(int i = 0; i < this.proximity.size; ++i) {
+                    this.incrementDump(this.proximity.size);
+                    Building other = this.proximity.get((i + dump) % this.proximity.size);
+                    if (outputDir == -1 || (outputDir + this.rotation) % 4 == this.relativeTo(other)) {
+                        other = other.getLiquidDestination(this, liquid);
+                        if (other != null && other.block.hasLiquids && this.canDumpLiquid(other, liquid) && other.liquids != null) {
+                            this.transferLiquid(other, liquids.get(liquid), liquid);
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void transferLiquid(Building next, float amount, Liquid liquid) {
+            float flow = Math.min(next.block.liquidCapacity - next.liquids.get(liquid), amount);
+            if (next.acceptLiquid(this, liquid)) {
+                float old = next.liquids.get(liquid);
+                next.handleLiquid(this, liquid, flow);
+                float extracted = next.liquids.get(liquid) - old;
+                this.liquids.remove(liquid, extracted);
+            }
+        }
+
+        @Override
         public boolean acceptLiquid(Building source, Liquid liquid) {
             return isImport && liquids.get(liquid) < liquidCapacity;
         }
@@ -84,7 +120,7 @@ public class ME2TransportationBus extends ME2Block {
         @Override
         public void buildConfiguration(Table table) {
             table.defaults().top().pad(3);
-            //ol in bundles - Original Login or Oxygen Liquid or Oxygen Login
+            //ol in bundles was API bug (very old and fixed)
             MultiItemSelection.buildTable(table, itemData);
             IllegalItemSelection.buildTable(table, Vars.content.liquids(),
                     () -> configurationLiquid, (liquid) -> configurationLiquid = liquid);
@@ -127,25 +163,27 @@ public class ME2TransportationBus extends ME2Block {
                     }
                     dump(getIndexItem());
                 }
+
                 if(configurationLiquid != null) {
+                    float left = 1 - liquids.get(configurationLiquid);
+                    if(left > 0) {
+                        liquids.add(configurationLiquid, left - graph.remove(LiquidStorageMixin.class, configurationLiquid.id, left));
+                    }
                     dumpLiquid(configurationLiquid);
-                    liquids.add(configurationLiquid, (int) (1- graph.remove(
-                            LiquidStorageMixin.class, configurationLiquid.id, 1)));
                 }
 
                 for(int i : itemData.config()) {
                     Item item = Vars.content.item(i);
                     if(item == null || items.get(item) > 0) continue;
-                    items.add(item, (int) (1-graph.remove(ItemStorageMixin.class, item.id, 1)));
+                    items.add(item, (int) (1 - graph.remove(ItemStorageMixin.class, item.id, 1)));
                 }
-            }
-
-            if(isImport) {
+            } else {
                 items.each((item, count) -> {
-                    items.remove(item, (int) (1-graph.add(ItemStorageMixin.class, item.id, 1)));
+                    items.remove(item, (int) (1 - graph.add(ItemStorageMixin.class, item.id, 1)));
                 });
+
                 liquids.each((liquid, count) -> {
-                    liquids.remove(liquid, (int) (1-graph.add(LiquidStorageMixin.class, liquid.id, 1)));
+                    liquids.remove(liquid, count - graph.add(LiquidStorageMixin.class, liquid.id, count));
                 });
             }
         }

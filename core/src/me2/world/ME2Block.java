@@ -201,7 +201,7 @@ public class ME2Block extends AdvancedBlock {
                     if(config instanceof Liquid) {
                         amount = graph.amount(LiquidStorageMixin.class, config.id);
                     }
-                    text(config.localizedName + "\n" + ImageInt.formatAmount(amount));
+                    text(config.localizedName.replace(' ', '\n') + '\n' + ImageInt.formatAmount(amount));
                 }
             }
             if(typeId == ME2Block.CONTROLLER_TYPE) {
