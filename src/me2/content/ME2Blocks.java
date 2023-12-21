@@ -25,7 +25,7 @@ import mindustry.world.draw.*;
 public class ME2Blocks {
     public static ME2Block[] storages = new ME2Block[5];
     public static Block cable, cableJunction, cableSwitch, adapter, bridge, balancer, exportBus, importBus, controller,
-            terminal, quartzFurnace, charger, growTurbine, quartzORe, quartzMine, screen, largeScreen;
+            terminal, quartzFurnace, charger, growTurbine, quartzORe, quartzMine, screen, largeScreen, phaseBridge;
 
     public static void load() {
         quartzORe = new OreBlock(ME2Items.quartzCrystal) {{
@@ -214,9 +214,10 @@ public class ME2Blocks {
                     Items.lead, 25
             ));
             health = 360;
+            configurable = true;
             typeId = ME2Block.CONTROLLER_TYPE;
             consumePowerDynamic((ME2Build b) -> {
-                return b.controllerScl() * 360;
+                return b.controllerScl() * 2;
             });
         }};
 
@@ -317,6 +318,21 @@ public class ME2Blocks {
             layers.add(new Layer(this, "-", EnumTextureMapping.ROT) {{
                 this.rotate = false;
             }});
+        }};
+
+        phaseBridge = new ME2Bridge("phase-bridge") {{
+            health = 120;
+            drawBase = false;
+            requirements(Category.distribution, ItemStack.with(
+                    ME2Items.chargedQuartzCrystal, 18,
+                    ME2Items.pureQuartzCrystal, 18,
+                    Items.copper, 50,
+                    Items.phaseFabric, 5
+            ));
+            layers.add(new Layer(this, "-", EnumTextureMapping.ROT) {{
+                this.rotate = false;
+            }});
+            maxLength = 15;
         }};
     }
 }

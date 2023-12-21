@@ -25,6 +25,7 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
+import mindustry.ui.Styles;
 
 public class ME2Block extends AdvancedBlock {
     public static final int
@@ -184,6 +185,15 @@ public class ME2Block extends AdvancedBlock {
                 x.add(Vars.content.liquids());
                 x.add(Vars.content.items());
                 IllegalItemSelection.buildTable(table, x, () -> config, (c) -> this.config = c);
+            }
+            if(typeId == CONTROLLER_TYPE) {
+                table.setBackground(Styles.black6);
+                table.table(sub -> {
+                    sub.add("Channels usage").row();
+                    sub.add("").update(l -> {
+                        l.setText(graph.totalChannelsUsage() + "/" + graph.totalChannelsGeneration());
+                    });
+                }).pad(6).grow();
             }
         }
 
